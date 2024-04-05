@@ -3,7 +3,11 @@ use std::io::{self, Write};
 mod dice;
 mod game;
 
+const ASCII_ART: &str = include_str!("ascii_art.txt");
+
 fn main() -> io::Result<()> {
+    println!("{}", ASCII_ART);
+
     // Prompt the player for a game name
     println!("Enter the name of the game:");
     let mut name = String::new();
