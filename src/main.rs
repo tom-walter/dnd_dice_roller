@@ -1,31 +1,45 @@
 use std::io::{self, Write};
+
 mod dice;
+mod game;
 
+fn main() -> io::Result<()> {
+    // Prompt the player for a game name
+    println!("Enter the name of the game:");
+    let mut name = String::new();
+    io::stdin().read_line(&mut name)?;
+    let name = name.trim();
 
-fn main() {
+    // Create or load the game
+    let mut game = game::Game::new(name);
+
+    // Main game loop
     loop {
-        // Print available dice options
-        println!("Available dice: d2, d4, d6 (Type 'done' or 'exit' to quit)");
-
-        // Prompt the user for input
-        print!("Enter the type of dice to roll: ");
-        io::stdout().flush().unwrap(); // Ensure the prompt is displayed immediately
+        // Prompt the player for input
+        println!("Enter the type of dice to roll (e.g., d4, d6) or type 'exit' to quit:");
         let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Failed to read line");
+        // io::stdout().flush()?; // Ensure prompt is displayed immediately
+        io::stdin().read_line(&mut input)?;
 
         // Trim whitespace and convert input to lowercase
         let input = input.trim().to_lowercase();
 
-        // Check if the user wants to exit
-        if input == "done" || input == "exit" {
+        // Check if the player wants to exit
+        if input == "exit" {
+            // Save game state before exiting
+            game.save()?;
             println!("Goodbye!");
             break;
         }
 
-        // Roll the dice and print the result
-        match dice::roll_dice(&input) {
-            Some(result) => println!("\nRolling {}... Result: {}\n", input, result),
-            None => println!("Invalid input. Please enter a valid dice type (e.g., d2, d4, d6)."),
+        // Roll the dice and update the game state
+        if let Some(roll) = dice::roll_dice(&input) {
+            println!("Rolling {}... Result: {}", input, roll);
+            game.add_roll(&input, roll);
+        } else {
+            println!("Invalid input. Please enter a valid dice type (e.g., d4, d6).");
         }
     }
+
+    Ok(())
 }
