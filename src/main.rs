@@ -4,6 +4,7 @@ mod dice;
 mod game;
 
 const ASCII_ART: &str = include_str!("ascii_art.txt");
+const AVAIL_DICE: &str = "(e.g. d2, d4, d6, d8, d10, d12, d20, d100)";
 
 fn main() -> io::Result<()> {
     println!("{}", ASCII_ART);
@@ -20,7 +21,7 @@ fn main() -> io::Result<()> {
     // Main game loop
     loop {
         // Prompt the player for input
-        println!("Enter a command: a dice (e.g. d2, d4, d6) to roll, 'hist' (display previous 5 rolls), or 'exit' (save and exit):");
+        println!("Enter a command:\npick a die {} to roll,\n'hist' (display previous 5 rolls),\nor 'exit' (save and exit):", AVAIL_DICE);
         let mut input = String::new();
         io::stdout().flush()?; // Ensure prompt is displayed immediately
         io::stdin().read_line(&mut input)?;
@@ -46,7 +47,7 @@ fn main() -> io::Result<()> {
                     println!("Rolling {}... Result: {}", input, roll);
                     game.add_roll(&input, roll);
                 } else {
-                    println!("Invalid input. Please enter a valid dice type (e.g. d2, d4, d6), 'hist', or 'exit'.");
+                    println!("Invalid input. Please enter a valid dice type {}, 'hist', or 'exit'.", AVAIL_DICE);
                 }
             }
         }
