@@ -1,6 +1,8 @@
 use chrono::{Local, DateTime, TimeZone};
-use std::fs::{self, File};
+use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
+
+const DT_FMT: &str = "%Y-%m-%d %H:%M:%S";
 
 // Roll struct to represent a single dice roll
 pub struct Roll {
@@ -23,7 +25,7 @@ impl Roll {
     pub fn to_string(&self) -> String {
         format!(
             "{};{};{}",
-            self.timestamp.format("%Y-%m-%d %H:%M:%S"),
+            self.timestamp.format(DT_FMT),
             self.dice_type,
             self.rolled
         )
@@ -59,7 +61,7 @@ impl Game {
                 if let Ok(line) = line {
                     let parts: Vec<&str> = line.split(';').collect();
                     if parts.len() == 3 {
-                        if let Ok(timestamp) = Local.datetime_from_str(parts[0], "%Y-%m-%d %H:%M:%S") {
+                        if let Ok(timestamp) = Local.datetime_from_str(parts[0], DT_FMT) {
                             let roll = Roll {
                                 timestamp,
                                 dice_type: parts[1].to_string(),
@@ -102,7 +104,7 @@ impl Game {
             for roll in &self.rolls[start_index..] {
                 println!(
                     "Timestamp: {}, Dice type: {}, Rolled: {}",
-                    roll.timestamp.format("%Y-%m-%d %H:%M:%S"),
+                    roll.timestamp.format(DT_FMT),
                     roll.dice_type,
                     roll.rolled
                 );
